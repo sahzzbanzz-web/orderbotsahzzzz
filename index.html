@@ -1,0 +1,65 @@
+const { Client, Buttons, MessageMedia } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+const client = new Client();
+
+client.on('qr', (qr) => {
+    // Generate QR code in terminal
+    qrcode.generate(qr, {small:true});
+});
+
+client.on('ready', () => {
+    console.log('Client is ready!');
+});
+
+// Handler ketika user mengetik "sewa bot"
+client.on('message', async message => {
+    if(message.body.toLowerCase() === 'sewa bot'){
+        
+        // Teks tampilannya
+        const text =
+`SEWA BOT BY SAHZZ
+
+20k permanen premium
+Keuntungan:
+- Fitur tambahan terbaru
+- Download video TikTok, FB, IG
+- Play music
+
+15k permanen reguler 
+Menu seperti pada umumnya
+
+10k 2 bulan
+7k 1 bulan
+5k 1 minggu
+
+Pilih paket sewabot:`;        
+
+        // Tombol pilihan paket sewa untuk memunculkan nomor WA
+        const buttons = new Buttons(
+            text,
+            [
+                { id: 'nomorwa1', body: 'Nomor WA 1' },
+                { id: 'nomorwa2', body: 'Nomor WA 2' },
+                { id: 'telegram', body: 'Telegram' }
+            ],
+            'SEWA BOT BY SAHZZ',
+            'Pilih salah satu tombol di bawah'
+        );
+
+        await client.sendMessage(message.from, buttons);
+    }
+
+    // Jika tombol ditekan
+    if(message.type === 'buttons_response') {
+        if(message.selectedButtonId === 'nomorwa1'){
+            await client.sendMessage(message.from, 'Hubungi nomor WA 1: +62 881-0258-83163');
+        } else if(message.selectedButtonId === 'nomorwa2'){
+            await client.sendMessage(message.from, 'Hubungi nomor WA 2: +62 889-9453-8851');
+        } else if(message.selectedButtonId === 'telegram'){
+            await client.sendMessage(message.from, 'Join Telegram: https://t.me/SahzzMarket');
+        }
+    }
+});
+
+client.initialize();
